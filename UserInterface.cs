@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using System.Drawing;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace RagePhoto.NET
@@ -25,18 +27,26 @@ namespace RagePhoto.NET
             };
             openFileDialog.ShowDialog(this);
 
+            if (openFileDialog.FileName == "")
+                return;
+
             RagePhoto ragePhoto = new();
             bool isLoaded = ragePhoto.LoadFile(openFileDialog.FileName);
             if (!isLoaded)
-                return;
+            {
+                Int32 error = ragePhoto.GetError();
+                if (error <= (Int32)RagePhoto.Error.PhotoReadError)
+                {
+                    MessageBox.Show("Failed to read photo: " + openFileDialog.FileName, "Open Photo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
 
-            Image? jpeg = ragePhoto.GetJPEG();
-            if (jpeg == null)
-                return;
+            Image jpeg = ragePhoto.GetJPEGImage();
             ImageBox.Image = jpeg;
 
-            String title = ragePhoto.GetTitle();
-            if (title == "")
+            String title = ragePhoto.Title;
+            if (String.IsNullOrEmpty(title))
                 Text = "RagePhoto.NET Photo Viewer";
             else
                 Text = "RagePhoto.NET Photo Viewer - " + title;

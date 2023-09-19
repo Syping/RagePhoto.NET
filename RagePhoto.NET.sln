@@ -2,7 +2,7 @@
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RagePhoto.NET", "RagePhoto.NET.csproj", "{25832908-236E-4F84-8411-736012305DAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RagePhoto.NET", "RagePhoto.NET.csproj", "{25832908-236E-4F84-8411-736012305DAA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
