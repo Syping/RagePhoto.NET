@@ -1,8 +1,3 @@
-using System.Diagnostics;
-using System.Drawing;
-using System.Reflection;
-using System.Windows.Forms;
-
 namespace RagePhoto.NET
 {
     public partial class UserInterface : Form
