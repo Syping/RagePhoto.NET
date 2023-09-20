@@ -37,7 +37,7 @@ namespace RagePhoto.NET
                 }
             }
 
-            Image jpeg = ragePhoto.GetJPEGImage();
+            Image jpeg = ragePhoto.JPEG_Image;
             ImageBox.Image = jpeg;
 
             String title = ragePhoto.Title;

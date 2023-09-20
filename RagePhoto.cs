@@ -5,7 +5,6 @@ namespace RagePhoto.NET
     internal class RagePhoto
     {
         private readonly IntPtr Instance;
-        public readonly String Version;
         public enum DefaultSize : UInt32
         {
             DEFAULT_GTA5_PHOTOBUFFER = 524288U,
@@ -86,6 +85,10 @@ namespace RagePhoto.NET
         [DllImport("libragephoto.dll")]
         private static extern IntPtr ragephoto_getphotojson(IntPtr instance);
         [DllImport("libragephoto.dll")]
+        private static extern IntPtr ragephoto_getphotoheader(IntPtr instance);
+        [DllImport("libragephoto.dll")]
+        private static extern UInt64 ragephoto_getphotosign(IntPtr instance);
+        [DllImport("libragephoto.dll")]
         private static extern UInt32 ragephoto_getphotosize(IntPtr instance);
         [DllImport("libragephoto.dll")]
         private static extern IntPtr ragephoto_getphototitle(IntPtr instance);
@@ -103,6 +106,8 @@ namespace RagePhoto.NET
         [DllImport("libragephoto.dll")]
         private static extern void ragephoto_setphotojson(IntPtr instance, [MarshalAs(UnmanagedType.LPUTF8Str)] String json, UInt32 bufferSize);
         [DllImport("libragephoto.dll")]
+        private static extern void ragephoto_setphotoheader2(IntPtr instance, [MarshalAs(UnmanagedType.LPUTF8Str)] String header, UInt32 headerSum, UInt32 headerSum2);
+        [DllImport("libragephoto.dll")]
         private static extern void ragephoto_setphototitle(IntPtr instance, [MarshalAs(UnmanagedType.LPUTF8Str)] String title, UInt32 bufferSize);
         [DllImport("libragephoto.dll")]
         private static extern IntPtr ragephoto_version();
@@ -110,12 +115,6 @@ namespace RagePhoto.NET
         public RagePhoto()
         {
             Instance = ragephoto_open();
-            IntPtr versionPtr = ragephoto_version();
-            String? versionStr = Marshal.PtrToStringUTF8(versionPtr);
-            if (versionStr == null)
-                Version = String.Empty;
-            else
-                Version = versionStr;
         }
 
         ~RagePhoto()
@@ -126,6 +125,21 @@ namespace RagePhoto.NET
         public void Clear()
         {
             ragephoto_clear(Instance);
+        }
+
+        public void CreateHeader(PhotoFormat photoFormat)
+        {
+            switch (photoFormat)
+            {
+                case PhotoFormat.GTA5:
+                    Format = (UInt32)photoFormat;
+                    ragephoto_setphotoheader2(Instance, "PHOTO - 09/20/23 04:41:35", 0x97D5BDBDU, 0x00000000U);
+                    break;
+                case PhotoFormat.RDR2:
+                    Format = (UInt32)photoFormat;
+                    ragephoto_setphotoheader2(Instance, "PHOTO - 09/20/23 04:39:16", 0x0F5B0A65U, 0xDF91D3D2U);
+                    break;
+            }
         }
 
         public bool Load(Byte[] data)
@@ -214,15 +228,18 @@ namespace RagePhoto.NET
             }
         }
 
-        public Image GetJPEGImage()
+        public Image JPEG_Image
         {
-            MemoryStream jpegStream = new(JPEG);
-            return Image.FromStream(jpegStream);
+            get
+            {
+                MemoryStream jpegStream = new(JPEG);
+                return Image.FromStream(jpegStream);
+            }
         }
 
-        public UInt32 GetJPEGSize()
+        public UInt32 JPEG_Size
         {
-            return ragephoto_getphotosize(Instance);
+            get => ragephoto_getphotosize(Instance);
         }
 
         public String JSON
@@ -236,6 +253,23 @@ namespace RagePhoto.NET
                 return jsonStr;
             }
             set => ragephoto_setphotojson(Instance, value, (UInt32)DefaultSize.DEFAULT_JSONBUFFER);
+        }
+
+        public String Header
+        {
+            get
+            {
+                IntPtr headerPtr = ragephoto_getphotoheader(Instance);
+                String? headerStr = Marshal.PtrToStringUTF8(headerPtr);
+                if (headerStr == null)
+                    return String.Empty;
+                return headerStr;
+            }
+        }
+
+        public UInt64 Sign
+        {
+            get => ragephoto_getphotosign(Instance);
         }
 
         public String Title
@@ -265,6 +299,18 @@ namespace RagePhoto.NET
             if (!isSaved)
                 return Array.Empty<Byte>();
             return jpeg;
+        }
+
+        public static String Version
+        {
+            get
+            {
+                IntPtr versionPtr = ragephoto_version();
+                String? versionStr = Marshal.PtrToStringUTF8(versionPtr);
+                if (versionStr == null)
+                    return String.Empty;
+                return versionStr;
+            }
         }
     }
 }
