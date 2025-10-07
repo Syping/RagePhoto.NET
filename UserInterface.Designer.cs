@@ -94,7 +94,6 @@
             MinimumSize = new Size(840, 520);
             Name = "UserInterface";
             Text = "RagePhoto.NET Photo Viewer";
-            Load += UserInterface_Load;
             ((System.ComponentModel.ISupportInitialize)ImageBox).EndInit();
             Panel.ResumeLayout(false);
             Panel.PerformLayout();
