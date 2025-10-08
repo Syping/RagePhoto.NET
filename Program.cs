@@ -3,8 +3,7 @@ namespace RagePhoto.NET;
 internal static class Program {
 
     [STAThread]
-    private static void Main()
-    {
+    private static void Main() {
         ApplicationConfiguration.Initialize();
         Application.Run(new UserInterface());
     }
