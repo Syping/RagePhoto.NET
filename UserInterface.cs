@@ -1,4 +1,3 @@
-using Syping.RagePhoto;
 namespace RagePhoto.NET;
 
 public partial class UserInterface : Form {
