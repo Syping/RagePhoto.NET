@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="RagePhoto.Core" Version="0.7.1" />
+    <PackageReference Include="RagePhoto.Core" Version="0.8.1" />
   </ItemGroup>
 
 
